@@ -1,4 +1,5 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Menu } from 'electron'
+import openDirectory from '@/utils/open-directory'
 
 /**
  * Set `__static` path to static files in production
@@ -33,7 +34,32 @@ function createWindow() {
   })
 }
 
-app.on('ready', createWindow)
+function setMainMenu() {
+  const template = [
+    {
+      label: '檔案',
+      submenu: [
+        {
+          label: '選擇資料夾',
+          click() {
+            const directory = openDirectory()
+            directory.forEach(d => {
+              console.log(d, 123)
+            })
+          },
+        },
+      ],
+    },
+  ]
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
+}
+
+app.on('ready', () => {
+  createWindow()
+  setMainMenu()
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
