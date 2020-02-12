@@ -1,5 +1,6 @@
 import { app, BrowserWindow, Menu } from 'electron'
 import openDirectory from '@/utils/open-directory'
+import spider from '@/utils/spider'
 
 /**
  * Set `__static` path to static files in production
@@ -43,8 +44,15 @@ function setMainMenu() {
           label: '選擇資料夾',
           click() {
             const directory = openDirectory()
-            directory.forEach(d => {
-              console.log(d, 123)
+            directory.forEach(async d => {
+              try {
+                const url = `https://www.javbus.com/${d.name}`
+                await spider(url, d.path, d.name)
+
+                console.log(`${d.name} 已下載完成`)
+              } catch (error) {
+                console.error(`${d.name} 找不到此番號`)
+              }
             })
           },
         },
