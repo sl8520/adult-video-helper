@@ -8,6 +8,11 @@ export default (imgUrl, imgPath, imgName) => {
       url: imgUrl,
       responseType: 'stream',
     }).then(response => {
+      // 判斷是否存在資料夾，若無則建立
+      if (!fs.existsSync(imgPath)) {
+        fs.mkdirSync(imgPath)
+      }
+
       const img = path.join(imgPath, imgName)
       response
         .pipe(fs.createWriteStream(img))

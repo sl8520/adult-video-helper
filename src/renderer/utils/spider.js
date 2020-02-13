@@ -19,8 +19,30 @@ export default (url, path, fileName) => {
       const imgUrl = imgRegex.exec(body)[1]
       const ext = imgUrl.split('.').pop()
 
-      // 下載圖片
+      // 下載封面圖
       await downloaded(imgUrl, path, `${fileName}.${ext}`)
+
+      // 劇照
+      const waterfallRegex = /<div id="sample-waterfall">(.*)<\/div>.*<div class="clearfix">/gs
+      const waterfall = waterfallRegex.exec(body)[1]
+
+      const waterfallImgRegex = /<img.*?src="(.*?)".*?>/g
+      let result = waterfallImgRegex.exec(waterfall)
+      let i = 1
+      while (result) {
+        const imgUrl = result[1]
+        const ext = imgUrl.split('.').pop()
+        // 下載劇照
+        await downloaded(imgUrl, path, `${i}.${ext}`)
+
+        // 抓取下一張圖片
+        result = waterfallImgRegex.exec(waterfall)
+        i++
+      }
+
+      // 標題
+      const titleRegex = /<h3>(.*?)<\/h3>/g
+      const title = titleRegex.exec(body)[1]
 
       // 資訊
       const infoRegex = /<div class="col-md-3 info">(.*?)<\/div>/gs
@@ -29,6 +51,9 @@ export default (url, path, fileName) => {
       while (info.indexOf(' ') >= 0) {
         info = info.replace(' ', '')
       }
+
+      // 組合標題進資訊欄
+      info = `標題:${title}\n${info}`
 
       // 儲存資訊為 txt
       writeFile(info, path, fileName)

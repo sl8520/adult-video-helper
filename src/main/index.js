@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu } from 'electron'
 import openDirectory from '@/utils/open-directory'
 import spider from '@/utils/spider'
+import moveFile from '@/utils/move-file'
 
 /**
  * Set `__static` path to static files in production
@@ -46,10 +47,14 @@ function setMainMenu() {
             const directory = openDirectory()
             directory.forEach(async d => {
               try {
+                // 爬取圖片及資訊
                 const url = `https://www.javbus.com/${d.name}`
                 await spider(url, d.path, d.name)
 
-                console.log(`${d.name} 已下載完成`)
+                // 搬移影片至資料夾
+                moveFile(d.file, d.newFile)
+
+                console.log(`${d.name} 已完成`)
               } catch (error) {
                 console.error(`${d.name} 找不到此番號`)
               }
