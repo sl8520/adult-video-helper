@@ -2,6 +2,7 @@ import { app, BrowserWindow, Menu } from 'electron'
 import openDirectory from '@/utils/open-directory'
 import spider from '@/utils/spider'
 import moveFile from '@/utils/move-file'
+import ProgressBar from 'electron-progressbar'
 
 /**
  * Set `__static` path to static files in production
@@ -11,7 +12,7 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-let mainWindow
+let mainWindow, progressBar
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
@@ -45,7 +46,14 @@ function setMainMenu() {
           label: '選擇資料夾',
           click() {
             const directory = openDirectory()
-            directory.forEach(async d => {
+            const total = directory.length
+
+            // 產生進度條
+            if (directory.length) {
+              showProgressbar()
+            }
+
+            directory.forEach(async(d, index) => {
               try {
                 // 爬取圖片及資訊
                 const url = `https://www.javbus.com/${d.name}`
@@ -57,6 +65,9 @@ function setMainMenu() {
                 console.log(`${d.name} 已完成`)
               } catch (error) {
                 console.error(`${d.name} 找不到此番號`)
+              } finally {
+                // 進度條
+                progressBar.value = ((index + 1) / total) * 100
               }
             })
           },
@@ -67,6 +78,48 @@ function setMainMenu() {
 
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
+}
+
+function showProgressbar() {
+  if (progressBar) {
+    return false
+  }
+
+  progressBar = new ProgressBar({
+    indeterminate: false,
+    browserWindow: {
+      parent: mainWindow,
+      text: 'Preparing data...',
+      detail: 'Wait...',
+      webPreferences: {
+        nodeIntegration: true,
+      },
+    },
+  })
+
+  progressBar
+    .on('completed', () => {
+      console.info(`completed...`)
+      progressBar.detail = 'Task completed. Exiting...'
+      progressBar = null
+    })
+    .on('aborted', value => {
+      console.info(`aborted... ${value}`)
+    })
+    .on('progress', value => {
+      // progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`
+    })
+
+  // launch a task and set the value of the progress bar each time a part of the task is done;
+  // the progress bar will be set as completed when it reaches its maxValue (default maxValue: 100);
+  // ps: setInterval is used here just to simulate a task being done
+  // setInterval(function() {
+  //   if (progressBar) {
+  //     if (!progressBar.isCompleted()) {
+  //       progressBar.value += 1
+  //     }
+  //   }
+  // }, 100)
 }
 
 app.on('ready', () => {
