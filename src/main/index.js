@@ -67,7 +67,9 @@ function setMainMenu() {
                 console.error(`${d.name} 找不到此番號`)
               } finally {
                 // 進度條
-                progressBar.value = ((index + 1) / total) * 100
+                if (progressBar) {
+                  progressBar.value = ((index + 1) / total) * 100
+                }
               }
             })
           },

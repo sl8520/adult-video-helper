@@ -1,3 +1,4 @@
+const path = require('path')
 import request from '@/utils/request'
 import downloaded from '@/utils/download-image'
 import writeFile from '@/utils/write-file'
@@ -6,7 +7,7 @@ function stripTags(text) {
   return text.replace(/(<([^>]+)>)/ig, '')
 }
 
-export default (url, path, fileName) => {
+export default (url, folderPath, fileName) => {
   return new Promise(async(resolve, reject) => {
     try {
       const body = await request({
@@ -20,7 +21,7 @@ export default (url, path, fileName) => {
       const ext = imgUrl.split('.').pop()
 
       // 下載封面圖
-      await downloaded(imgUrl, path, `${fileName}.${ext}`)
+      await downloaded(imgUrl, folderPath, `${fileName}.${ext}`)
 
       // 劇照
       const waterfallRegex = /<div id="sample-waterfall">(.*)<\/div>.*<div class="clearfix">/gs
@@ -32,8 +33,9 @@ export default (url, path, fileName) => {
       while (result) {
         const imgUrl = result[1]
         const ext = imgUrl.split('.').pop()
+        const imagePath = path.join(folderPath, 'pic')
         // 下載劇照
-        await downloaded(imgUrl, path, `${i}.${ext}`)
+        await downloaded(imgUrl, imagePath, `${i}.${ext}`)
 
         // 抓取下一張圖片
         result = waterfallImgRegex.exec(waterfall)
@@ -56,7 +58,7 @@ export default (url, path, fileName) => {
       info = `標題:${title}\n${info}`
 
       // 儲存資訊為 txt
-      writeFile(info, path, fileName)
+      writeFile(info, folderPath, fileName)
 
       resolve()
     } catch (error) {
