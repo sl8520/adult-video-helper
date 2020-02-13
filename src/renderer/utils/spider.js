@@ -26,7 +26,7 @@ export default (url, path, fileName) => {
       const waterfallRegex = /<div id="sample-waterfall">(.*)<\/div>.*<div class="clearfix">/gs
       const waterfall = waterfallRegex.exec(body)[1]
 
-      const waterfallImgRegex = /<img.*?src="(.*?)".*?>/g
+      const waterfallImgRegex = /<a.*?class="sample-box".*?href="(.*?)">/g
       let result = waterfallImgRegex.exec(waterfall)
       let i = 1
       while (result) {

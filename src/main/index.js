@@ -109,17 +109,6 @@ function showProgressbar() {
     .on('progress', value => {
       // progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`
     })
-
-  // launch a task and set the value of the progress bar each time a part of the task is done;
-  // the progress bar will be set as completed when it reaches its maxValue (default maxValue: 100);
-  // ps: setInterval is used here just to simulate a task being done
-  // setInterval(function() {
-  //   if (progressBar) {
-  //     if (!progressBar.isCompleted()) {
-  //       progressBar.value += 1
-  //     }
-  //   }
-  // }, 100)
 }
 
 app.on('ready', () => {
