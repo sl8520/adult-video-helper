@@ -12,6 +12,18 @@
           <el-form-item label="影音格式" prop="video">
             <el-input v-model="editForm.video" />
           </el-form-item>
+
+          <el-alert
+            title="變數取代可使用項目"
+            type="error"
+            :closable="false"
+          >
+            <template>
+              <div class="description" v-for="(item, key) in rules" :key="key">
+                %{{ key }}% : {{ item }}
+              </div>
+            </template>
+          </el-alert>
         </el-form>
 
         <div class="button-container">
@@ -43,6 +55,17 @@ export default {
         cover: [{ required: true, trigger: 'blur', message: '請填寫封面格式規則' }],
         stills: [{ required: true, trigger: 'blur', message: '請填寫劇照格式規則' }],
         video: [{ required: true, trigger: 'blur', message: '請填寫影音格式規則' }],
+      },
+      rules: {
+        id: '番號',
+        date: '發行日期',
+        length: '長度',
+        director: '導演',
+        maker: '製作商',
+        studio: '發行商',
+        series: '系列',
+        genre: '類別',
+        actor: '演員',
       },
     }
   },
@@ -76,3 +99,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+  .description {
+    margin-bottom: 8px;
+  }
+</style>
