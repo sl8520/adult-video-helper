@@ -24,17 +24,15 @@ export default () => {
       const folderPath = path.join(choosePath, name)
       // 原始檔案路徑
       const filePath = path.join(choosePath, file)
-      // 搬移檔案路徑
-      const newFilePath = path.join(folderPath, file)
       // 判斷是否為檔案
       if (fs.statSync(filePath).isFile()) {
         // 判斷是否為要抓的副檔名
         if (ext && extension.includes(ext)) {
           directory.push({
             name,
+            ext,
             path: folderPath,
             file: filePath,
-            newFile: newFilePath,
           })
         }
       }

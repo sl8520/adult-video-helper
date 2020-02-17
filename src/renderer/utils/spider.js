@@ -88,7 +88,7 @@ export default (url, folderPath, fileName) => {
       info = `標題:${title}${info}`
 
       /** 替代字串 (組成新檔名) */
-      const newFileNmae = {
+      const newFileName = {
         // 封面
         cover: '',
         // 劇照
@@ -100,7 +100,7 @@ export default (url, folderPath, fileName) => {
       const settings = store.state.settings
       Object.keys(settings).forEach(key => {
         const fileRule = settings[key]
-        newFileNmae[key] = Object.keys(substitute).reduce((prev, item) => {
+        newFileName[key] = Object.keys(substitute).reduce((prev, item) => {
           return prev.replace(`%${item}%`, substitute[item])
         }, fileRule)
       })
@@ -112,7 +112,7 @@ export default (url, folderPath, fileName) => {
       const ext = imgUrl.split('.').pop()
 
       // 下載封面圖
-      await downloaded(imgUrl, folderPath, `${newFileNmae.cover}.${ext}`)
+      await downloaded(imgUrl, folderPath, `${newFileName.cover}.${ext}`)
 
       // 劇照
       const waterfallRegex = /<div id="sample-waterfall">(.*)<\/div>.*<div class="clearfix">/gs
@@ -126,7 +126,7 @@ export default (url, folderPath, fileName) => {
         const ext = imgUrl.split('.').pop()
         const imagePath = path.join(folderPath, 'pic')
         // 下載劇照
-        await downloaded(imgUrl, imagePath, `${newFileNmae.stills} - ${i}.${ext}`)
+        await downloaded(imgUrl, imagePath, `${newFileName.stills} - ${i}.${ext}`)
 
         // 抓取下一張圖片
         result = waterfallImgRegex.exec(waterfall)
@@ -134,9 +134,9 @@ export default (url, folderPath, fileName) => {
       }
 
       // 儲存資訊為 txt
-      writeFile(info, folderPath, newFileNmae.video)
+      writeFile(info, folderPath, fileName)
 
-      resolve()
+      resolve(newFileName)
     } catch (error) {
       reject(error)
     }

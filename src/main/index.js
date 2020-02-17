@@ -57,10 +57,10 @@ function setMainMenu() {
               try {
                 // 爬取圖片及資訊
                 const url = `https://www.javbus.com/${d.name}`
-                await spider(url, d.path, d.name)
+                const newFileName = await spider(url, d.path, d.name)
 
                 // 搬移影片至資料夾
-                moveFile(d.file, d.newFile)
+                moveFile(d.file, require('path').join(d.path, `${newFileName.video}.${d.ext}`))
 
                 console.log(`${d.name} 已完成`)
               } catch (error) {
