@@ -7,7 +7,7 @@
           "targets": { "node": 7 }
         }],
         "stage-0"
-      ]
+      ],
     },
     "renderer": {
       "presets": [
@@ -26,5 +26,14 @@
       ]
     }
   },
-  "plugins": ["transform-runtime"]
+  "plugins": [
+    "transform-runtime",
+    [
+      "component",
+      {
+        "libraryName": "element-ui",
+        "style": false
+      }
+    ]
+  ]
 }

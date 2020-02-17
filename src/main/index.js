@@ -1,8 +1,8 @@
 import { app, BrowserWindow, Menu } from 'electron'
+import ProgressBar from 'electron-progressbar'
 import openDirectory from '@/utils/open-directory'
 import spider from '@/utils/spider'
 import moveFile from '@/utils/move-file'
-import ProgressBar from 'electron-progressbar'
 
 /**
  * Set `__static` path to static files in production
@@ -74,6 +74,12 @@ function setMainMenu() {
             })
           },
         },
+        {
+          label: '系統設定',
+          click() {
+            routeTo(mainWindow, 'Setting')
+          },
+        },
       ],
     },
   ]
@@ -111,6 +117,10 @@ function showProgressbar() {
     .on('progress', value => {
       // progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`
     })
+}
+
+function routeTo(win, to = '') {
+  win.webContents.send('href', to)
 }
 
 app.on('ready', () => {
