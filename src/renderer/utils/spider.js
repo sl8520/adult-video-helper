@@ -10,11 +10,11 @@ function stripTags(text) {
   return text.replace(/(<([^>]+)>)/ig, '')
 }
 
-export default (url, folderPath, fileName) => {
+export default (viedoId, folderPath) => {
   return new Promise(async(resolve, reject) => {
     try {
       const body = await request({
-        url,
+        url: `https://www.javbus.com/${viedoId}`,
         method: 'get',
       })
 
@@ -134,7 +134,7 @@ export default (url, folderPath, fileName) => {
       }
 
       // 儲存資訊為 txt
-      writeFile(info, folderPath, fileName)
+      writeFile(info, folderPath, viedoId)
 
       resolve(newFileName)
     } catch (error) {

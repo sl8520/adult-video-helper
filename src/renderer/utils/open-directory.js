@@ -16,12 +16,16 @@ export default () => {
 
     // 讀取資料夾底下的所有檔案
     fs.readdirSync(choosePath).forEach(file => {
-      // 檔案名稱
+      // 檔案名稱(番號)
       const name = file.split('.').shift()
       // 檔案副檔名
       const ext = file.split('.').pop()
+      // A、B片原始檔名(番號)
+      const pluralName = /(\w+-\d+)(.*)/.exec(name)
+      const originName = pluralName ? pluralName[1] : name
+      const suffix = pluralName ? pluralName[2] : ''
       // 欲建立資料夾路徑
-      const folderPath = path.join(choosePath, name)
+      const folderPath = path.join(choosePath, originName)
       // 原始檔案路徑
       const filePath = path.join(choosePath, file)
       // 判斷是否為檔案
@@ -31,6 +35,8 @@ export default () => {
           directory.push({
             name,
             ext,
+            originName,
+            suffix,
             path: folderPath,
             file: filePath,
           })

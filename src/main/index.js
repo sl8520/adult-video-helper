@@ -56,11 +56,10 @@ function setMainMenu() {
             directory.forEach(async(d, index) => {
               try {
                 // 爬取圖片及資訊
-                const url = `https://www.javbus.com/${d.name}`
-                const newFileName = await spider(url, d.path, d.name)
+                const newFileName = await spider(d.originName, d.path)
 
                 // 搬移影片至資料夾
-                moveFile(d.file, require('path').join(d.path, `${newFileName.video}.${d.ext}`))
+                moveFile(d.file, require('path').join(d.path, `${newFileName.video}${d.suffix}.${d.ext}`))
 
                 console.log(`${d.name} 已完成`)
               } catch (error) {
