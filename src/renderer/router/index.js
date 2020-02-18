@@ -8,13 +8,18 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'LandingPage',
-      component: () => import('@/views/pages/landing-page'),
+      name: 'Home',
+      component: () => import('@/views/pages/home'),
     },
     {
       path: '/setting',
       name: 'Setting',
       component: () => import('@/views/pages/setting'),
+    },
+    {
+      path: '/landing-page',
+      name: 'LandingPage',
+      component: () => import('@/views/pages/landing-page'),
     },
     {
       path: '*',

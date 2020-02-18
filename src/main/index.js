@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import ProgressBar from 'electron-progressbar'
 import openDirectory from '@/utils/open-directory'
 import spider from '@/utils/spider'
@@ -43,37 +43,9 @@ function setMainMenu() {
       label: '檔案',
       submenu: [
         {
-          label: '選擇資料夾',
+          label: '首頁',
           click() {
-            const directory = openDirectory()
-            const total = directory.length
-
-            // 產生進度條
-            if (directory.length) {
-              showProgressbar()
-            }
-
-            directory.forEach(async(d, index) => {
-              try {
-                // 爬取圖片及資訊
-                const newFileName = await spider(d.originName, d.path)
-
-                // 搬移影片至資料夾
-                const videoSplit = newFileName.video.split('/')
-                const videoFileName = `${videoSplit.pop()}${d.suffix}.${d.ext}`
-                const videoPath = require('path').join(d.path, ...videoSplit, videoFileName)
-                moveFile(d.file, videoPath)
-
-                console.log(`${d.name} 已完成`)
-              } catch (error) {
-                console.error(`${d.name} 找不到此番號`)
-              } finally {
-                // 進度條
-                if (progressBar) {
-                  progressBar.value = ((index + 1) / total) * 100
-                }
-              }
-            })
+            routeTo(mainWindow, 'Home')
           },
         },
         {
@@ -121,8 +93,8 @@ function showProgressbar() {
     })
 }
 
-function routeTo(win, to = '') {
-  win.webContents.send('href', to)
+function routeTo(win, to = '', props = {}) {
+  win.webContents.send('href', to, props)
 }
 
 app.on('ready', () => {
@@ -140,6 +112,60 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
   }
+})
+
+// 開啟資料夾
+ipcMain.on('openDirectory', (event, arg) => {
+  const directory = openDirectory()
+
+  // 產生預覽資訊
+  const tableList = directory.map(async(d, index) => {
+    try {
+      // 爬取圖片及資訊
+      const { substitute } = await spider(d.originName, d.path)
+      substitute.originId = d.name
+
+      return substitute
+    } catch (error) {
+      console.error(`${d.name} 找不到此番號`)
+    }
+  })
+
+  Promise.all(tableList).then(list => {
+    mainWindow.webContents.send('tableList', { directory, list })
+  })
+})
+
+// 下載資訊
+ipcMain.on('download', (event, directory) => {
+  const total = directory.length
+
+  // 產生進度條
+  if (total) {
+    showProgressbar()
+  }
+
+  directory.forEach(async(d, index) => {
+    try {
+      // 爬取圖片及資訊
+      const { newFileName } = await spider(d.originName, d.path)
+
+      // 搬移影片至資料夾
+      const videoSplit = newFileName.video.split('/')
+      const videoFileName = `${videoSplit.pop()}${d.suffix}.${d.ext}`
+      const videoPath = require('path').join(d.path, ...videoSplit, videoFileName)
+      moveFile(d.file, videoPath)
+
+      console.log(`${d.name} 已完成`)
+    } catch (error) {
+      console.error(`${d.name} 找不到此番號`)
+    } finally {
+      // 進度條
+      if (progressBar) {
+        progressBar.value = ((index + 1) / total) * 100
+      }
+    }
+  })
 })
 
 /**
