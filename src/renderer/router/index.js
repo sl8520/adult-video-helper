@@ -8,13 +8,13 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'landing-page',
-      component: require('@/components/LandingPage').default,
+      name: 'LandingPage',
+      component: () => import('@/views/pages/landing-page'),
     },
     {
       path: '/setting',
       name: 'Setting',
-      component: () => import('@/views/pages/setting/index'),
+      component: () => import('@/views/pages/setting'),
     },
     {
       path: '*',
@@ -24,11 +24,9 @@ const router = new Router({
 })
 
 ipcRenderer.on('href', (event, arg) => {
-  if (arg) {
-    // 不在同一頁才換頁
-    if (arg !== router.currentRoute.name) {
-      router.push({ name: arg })
-    }
+  // 不在同一頁才換頁
+  if (arg && arg !== router.currentRoute.name) {
+    router.push({ name: arg })
   }
 })
 
