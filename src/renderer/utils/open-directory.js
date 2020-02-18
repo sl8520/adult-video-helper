@@ -24,8 +24,6 @@ export default () => {
       const pluralName = /(\w+-\d+)(.*)/.exec(name)
       const originName = pluralName ? pluralName[1] : name
       const suffix = pluralName ? pluralName[2] : ''
-      // 欲建立資料夾路徑
-      const folderPath = path.join(choosePath, originName)
       // 原始檔案路徑
       const filePath = path.join(choosePath, file)
       // 判斷是否為檔案
@@ -37,7 +35,7 @@ export default () => {
             ext,
             originName,
             suffix,
-            path: folderPath,
+            path: choosePath,
             file: filePath,
           })
         }

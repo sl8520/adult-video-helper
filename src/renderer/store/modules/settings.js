@@ -1,7 +1,8 @@
 const state = {
-  cover: '%actor% %id% [%genre%]',
-  stills: '%actor% %id% [%genre%]',
-  video: '%actor% %id% [%genre%]',
+  cover: '%actor%/%id%/%id% [%genre%]',
+  stills: '%actor%/%id%/pic/%id% [%genre%]',
+  video: '%actor%/%id%/%id% [%genre%]',
+  info: '%actor%/%id%/%id% [%genre%]',
 }
 
 const mutations = {

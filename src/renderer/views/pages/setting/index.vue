@@ -12,6 +12,9 @@
           <el-form-item label="影音格式" prop="video">
             <el-input v-model="editForm.video" />
           </el-form-item>
+          <el-form-item label="資訊格式" prop="info">
+            <el-input v-model="editForm.info" />
+          </el-form-item>
 
           <el-alert
             title="變數取代可使用項目"
@@ -19,7 +22,10 @@
             :closable="false"
           >
             <template>
-              <div class="description" v-for="(item, key) in rules" :key="key">
+              <div class="description">
+                / : 資料夾階層
+              </div>
+              <div v-for="(item, key) in rules" :key="key" class="description">
                 %{{ key }}% : {{ item }}
               </div>
             </template>
@@ -50,11 +56,13 @@ export default {
         cover: '',
         stills: '',
         video: '',
+        info: '',
       },
       editRules: {
         cover: [{ required: true, trigger: 'blur', message: '請填寫封面格式規則' }],
         stills: [{ required: true, trigger: 'blur', message: '請填寫劇照格式規則' }],
         video: [{ required: true, trigger: 'blur', message: '請填寫影音格式規則' }],
+        info: [{ required: true, trigger: 'blur', message: '請填寫資訊格式規則' }],
       },
       rules: {
         id: '番號',

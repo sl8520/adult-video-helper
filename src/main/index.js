@@ -59,7 +59,10 @@ function setMainMenu() {
                 const newFileName = await spider(d.originName, d.path)
 
                 // 搬移影片至資料夾
-                moveFile(d.file, require('path').join(d.path, `${newFileName.video}${d.suffix}.${d.ext}`))
+                const videoSplit = newFileName.video.split('/')
+                const videoFileName = `${videoSplit.pop()}${d.suffix}.${d.ext}`
+                const videoPath = require('path').join(d.path, ...videoSplit, videoFileName)
+                moveFile(d.file, videoPath)
 
                 console.log(`${d.name} 已完成`)
               } catch (error) {

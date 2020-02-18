@@ -10,7 +10,7 @@ export default (imgUrl, imgPath, imgName) => {
     }).then(response => {
       // 判斷是否存在資料夾，若無則建立
       if (!fs.existsSync(imgPath)) {
-        fs.mkdirSync(imgPath)
+        fs.mkdirSync(imgPath, { recursive: true })
       }
 
       const img = path.join(imgPath, imgName)
