@@ -93,8 +93,8 @@ function showProgressbar() {
     })
 }
 
-function routeTo(win, to = '', props = {}) {
-  win.webContents.send('href', to, props)
+function routeTo(win, to) {
+  win.webContents.send('href', to)
 }
 
 app.on('ready', () => {
