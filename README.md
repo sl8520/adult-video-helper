@@ -1,6 +1,6 @@
 # videoHelper
 
-> An electron-vue project
+> An video helper for adult video
 
 #### Build Setup
 

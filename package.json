@@ -2,7 +2,7 @@
   "name": "videoHelper",
   "version": "0.0.1",
   "author": "彥彬 <sl8520@hotmail.com>",
-  "description": "An electron-vue project",
+  "description": "An video helper for adult video",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
