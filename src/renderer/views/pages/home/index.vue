@@ -20,17 +20,17 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" prop="originId" label="原始檔名">
+      <el-table-column width="100" align="center" prop="originId" label="原始檔名">
         <template slot-scope="scope">
           <span>{{ scope.row.originId }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="id" label="番號">
+      <el-table-column width="90" align="center" prop="id" label="番號">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="date" label="發行日期">
+      <el-table-column width="100" align="center" prop="date" label="發行日期">
         <template slot-scope="scope">
           <span>{{ scope.row.date }}</span>
         </template>
@@ -60,7 +60,7 @@
           <span>{{ scope.row.series }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="genre" label="類別">
+      <el-table-column width="400" align="center" prop="genre" label="類別">
         <template slot-scope="scope">
           <span>{{ scope.row.genre }}</span>
         </template>
@@ -68,6 +68,16 @@
       <el-table-column align="center" prop="actor" label="演員">
         <template slot-scope="scope">
           <span>{{ scope.row.actor }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" align="center" prop="cover" label="封面圖">
+        <template slot-scope="scope">
+          <img class="max-width-100-percent" :src="scope.row.cover" alt="">
+        </template>
+      </el-table-column>
+      <el-table-column width="500" align="center" prop="stills" label="劇照">
+        <template slot-scope="scope">
+          <img v-for="item in scope.row.stills" :key="item" class="width-10-percent" :src="item" alt="">
         </template>
       </el-table-column>
     </el-table>
@@ -131,3 +141,13 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.max-width-100-percent {
+  max-width: 100%;
+}
+
+.width-10-percent {
+  width: 10%;
+}
+</style>

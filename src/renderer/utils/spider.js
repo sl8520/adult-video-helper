@@ -47,7 +47,7 @@ export default (videoId, folderPath, save = false) => {
       }, info)
 
       // 抓取各對應變數
-      const substitute = {}
+      const substitute = { stills: [] }
       lineBreak.forEach(line => {
         const pattern = new RegExp(`${line}:(.*)\\s*`, 'g')
         const regExec = pattern.exec(info)
@@ -108,41 +108,47 @@ export default (videoId, folderPath, save = false) => {
         }, fileRule)
       })
 
-      if (save) {
-        /** 下載圖片 */
-        // 封面圖
-        const coverRegex = /var\s+img\s*=\s*[\'\"](.*)[\'\"]/g
-        const coverUrl = coverRegex.exec(body)[1]
-        const ext = coverUrl.split('.').pop()
+      /** 下載圖片 */
+      // 封面圖
+      const coverRegex = /var\s+img\s*=\s*[\'\"](.*)[\'\"]/g
+      const coverUrl = coverRegex.exec(body)[1]
+      substitute.cover = coverUrl
 
-        // 下載封面圖
+      // 下載封面圖
+      if (save) {
+        const ext = coverUrl.split('.').pop()
         const coverSplit = newFileName.cover.split('/')
         const coverFileName = `${coverSplit.pop()}.${ext}`
         const coverPath = path.join(folderPath, ...coverSplit)
         await downloaded(coverUrl, coverPath, coverFileName)
+      }
 
-        // 劇照
-        const waterfallRegex = /<div id="sample-waterfall">(.*)<\/div>.*<div class="clearfix">/gs
-        const waterfall = waterfallRegex.exec(body)[1]
+      // 劇照
+      const waterfallRegex = /<div id="sample-waterfall">(.*)<\/div>.*<div class="clearfix">/gs
+      const waterfall = waterfallRegex.exec(body)[1]
 
-        const stillsRegex = /<a.*?class="sample-box".*?href="(.*?)">/g
-        let result = stillsRegex.exec(waterfall)
-        let i = 1
-        while (result) {
-          const stillsUrl = result[1]
+      const stillsRegex = /<a.*?class="sample-box".*?href="(.*?)">/g
+      let result = stillsRegex.exec(waterfall)
+      let i = 1
+      while (result) {
+        const stillsUrl = result[1]
+        substitute.stills.push(stillsUrl)
+        // 下載劇照
+        if (save) {
           const ext = stillsUrl.split('.').pop()
           const stillsSplit = newFileName.stills.split('/')
           const stillsFileName = `${stillsSplit.pop()} - ${i}.${ext}`
           const stillsPath = path.join(folderPath, ...stillsSplit)
-          // 下載劇照
           await downloaded(stillsUrl, stillsPath, stillsFileName)
-
-          // 抓取下一張圖片
-          result = stillsRegex.exec(waterfall)
-          i++
         }
 
-        // 儲存資訊為 txt
+        // 抓取下一張圖片
+        result = stillsRegex.exec(waterfall)
+        i++
+      }
+
+      // 儲存資訊為 txt
+      if (save) {
         const infoSplit = newFileName.info.split('/')
         const infoFileName = `${infoSplit.pop()}.txt`
         const infoPath = path.join(folderPath, ...infoSplit)
