@@ -1,5 +1,5 @@
 {
-  "name": "videoHelper",
+  "name": "adult-video-helper",
   "version": "0.0.2",
   "author": "彥彬 <sl8520@hotmail.com>",
   "description": "An video helper for adult video",
@@ -30,7 +30,7 @@
     ]
   },
   "build": {
-    "productName": "videoHelper",
+    "productName": "AdultVideoHelper",
     "appId": "com.example.yourapp",
     "directories": {
       "output": "build"

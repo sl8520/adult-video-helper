@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'VideoHelper',
+  name: 'AdultVideoHelper',
 }
 </script>
 
